@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
@@ -8,23 +7,18 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <script type="module">
-// ════════════════════════════════════════
-//  FIREBASE SETUP
-// ════════════════════════════════════════
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged }
-  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getDatabase, ref, set, get, push, onValue, off, update, remove, serverTimestamp }
-  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getDatabase, ref, set, get, push, onValue, off, update, remove, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
 const firebaseConfig = {
-apiKey: “AIzaSyDqJ_luoz1l_TBD874R82rv0e6Yf8sXhiw”,
-authDomain: “realtime-database-674e5.firebaseapp.com”,
-databaseURL: “https://realtime-database-674e5-default-rtdb.europe-west1.firebasedatabase.app”,
-projectId: “realtime-database-674e5”,
-storageBucket: “realtime-database-674e5.firebasestorage.app”,
-messagingSenderId: “425692861435”,
-appId: “1:425692861435:web:ffdbbfe67b9f7637b6b15e”
+  apiKey: "AIzaSyDqJ_luoz1l_TBD874R82rv0e6Yf8sXhiw",
+  authDomain: "realtime-database-674e5.firebaseapp.com",
+  databaseURL: "https://realtime-database-674e5-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "realtime-database-674e5",
+  storageBucket: "realtime-database-674e5.firebasestorage.app",
+  messagingSenderId: "425692861435",
+  appId: "1:425692861435:web:ffdbbfe67b9f7637b6b15e"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -32,26 +26,22 @@ const auth = getAuth(app);
 const db = getDatabase(app);
 const provider = new GoogleAuthProvider();
 
-// Global erişim için window’a ata
-window._fb = { auth, db, ref, set, get, push, onValue, off, update, remove,
-signInWithPopup, signOut, GoogleAuthProvider, provider, onAuthStateChanged, serverTimestamp };
+window._fb = { auth, db, ref, set, get, push, onValue, off, update, remove, signInWithPopup, signOut, provider, onAuthStateChanged, serverTimestamp };
 
-// Auth state değişince
 onAuthStateChanged(auth, user => {
-if(user){
-window.currentUser = {
-id: user.uid,
-name: user.displayName || user.email.split(’@’)[0],
-email: user.email,
-picture: user.photoURL,
-auth: ‘google’
-};
-window._fbReady = true;
-if(window._onAuthReady) window._onAuthReady();
-}
+  if(user){
+    window.currentUser = {
+      id: user.uid,
+      name: user.displayName || (user.email ? user.email.split("@")[0] : "Oyuncu"),
+      email: user.email,
+      picture: user.photoURL,
+      auth: "google"
+    };
+    window._fbReady = true;
+    if(window._onAuthReady) window._onAuthReady();
+  }
 });
 </script>
-
 <style>
 :root{
   --bg:#0f1a0f;--s1:#142014;--s2:#182818;--s3:#1e321e;--s4:#243c24;
@@ -523,7 +513,6 @@ body{
   #unoGame,#okeyGame{padding:.8rem;}
 }
 </style>
-
 </head>
 <body>
 <div class="amb amb-1"></div>
@@ -531,7 +520,6 @@ body{
 <div class="amb amb-3"></div>
 
 <!-- ════ LOGIN ════ -->
-
 <div id="loginScreen" class="screen active">
   <div class="login-brand">
     <div class="brand-cards" id="brandCards"></div>
@@ -551,7 +539,6 @@ body{
 </div>
 
 <!-- ════ SESSIONS ════ -->
-
 <div id="sessionsScreen" class="screen">
   <nav class="nav">
     <span class="nav-logo">KART ARENA</span>
@@ -573,7 +560,6 @@ body{
 </div>
 
 <!-- ════ LOBBY ════ -->
-
 <div id="lobbyScreen" class="screen">
   <div class="lobby-wrap">
     <div class="lobby-hd">
@@ -584,29 +570,25 @@ body{
       </div>
     </div>
 
-```
-<div class="lsec">
-  <div class="lsec-label">Oyuncu Sayısı (2–6)</div>
-  <div class="cnt-grid" id="cntGrid"></div>
-</div>
+    <div class="lsec">
+      <div class="lsec-label">Oyuncu Sayısı (2–6)</div>
+      <div class="cnt-grid" id="cntGrid"></div>
+    </div>
 
-<div class="lsec">
-  <div class="lsec-label">Masa</div>
-  <div class="slot-list" id="slotList"></div>
-</div>
+    <div class="lsec">
+      <div class="lsec-label">Masa</div>
+      <div class="slot-list" id="slotList"></div>
+    </div>
 
-<div id="lobbyRoomCode" style="display:none;align-items:center;gap:.6rem;background:rgba(245,200,66,.07);border:1px solid rgba(245,200,66,.2);border-radius:12px;padding:.6rem 1rem;margin:0 0 .5rem;"></div>
-<div class="lobby-foot">
-  <button class="btn btn-ghost" onclick="backToSessionsFromLobby()">← Geri</button>
-  <button class="btn btn-primary" id="lobbyStartBtn" onclick="startFromLobby()">Oyunu Başlat 🎮</button>
-</div>
-```
-
+    <div id="lobbyRoomCode" style="display:none;align-items:center;gap:.6rem;background:rgba(245,200,66,.07);border:1px solid rgba(245,200,66,.2);border-radius:12px;padding:.6rem 1rem;margin:0 0 .5rem;"></div>
+    <div class="lobby-foot">
+      <button class="btn btn-ghost" onclick="backToSessionsFromLobby()">← Geri</button>
+      <button class="btn btn-primary" id="lobbyStartBtn" onclick="startFromLobby()">Oyunu Başlat 🎮</button>
+    </div>
   </div>
 </div>
 
 <!-- ════ GAME ════ -->
-
 <div id="gameScreen" class="screen">
   <nav class="game-nav">
     <button class="back-btn" onclick="backToSessions()">← Geri</button>
@@ -619,7 +601,6 @@ body{
   </nav>
 
   <!-- UNO -->
-
   <div id="unoGame">
     <div class="players-row" id="unoPlayers"></div>
     <div class="game-table">
@@ -651,7 +632,6 @@ body{
   </div>
 
   <!-- OKEY -->
-
   <div id="okeyGame">
     <div class="players-row" id="okeyPlayers"></div>
     <div class="game-table">
@@ -688,7 +668,6 @@ body{
 </div>
 
 <!-- ════ NEW SESSION MODAL ════ -->
-
 <div class="modal-overlay" id="newSessionModal">
   <div class="modal">
     <h3>Yeni Oda Oluştur</h3>
@@ -731,7 +710,6 @@ body{
 </div>
 
 <!-- ════ RULES MODAL ════ -->
-
 <div class="modal-overlay" id="rulesModal">
   <div class="modal" style="max-width:500px;">
     <h3>📖 UNO Kuralları</h3>
@@ -759,7 +737,6 @@ body{
 </div>
 
 <!-- ════ WIN ════ -->
-
 <div class="win-overlay" id="winOverlay">
   <div class="win-box" style="max-width:540px;">
     <div class="win-emoji" id="winEmoji">🎉</div>
@@ -786,7 +763,6 @@ body{
 </div>
 
 <!-- ════ STANDINGS ════ -->
-
 <div class="modal-overlay" id="standingsModal">
   <div class="modal" style="max-width:480px;">
     <h3 id="standingsTitle">📊 Turnuva Puan Tablosu</h3>
@@ -860,15 +836,26 @@ function buildBrandCards(){
 //  AUTH
 // ═══════════════════════════════════════════
 function loginWithGoogle(){
-  if(!window._fb){showToast('Firebase yükleniyor, bekleyin...');return;}
-  window._fb.signInWithPopup(window._fb.auth, window._fb.provider)
+  if(!window._fb){showToast('Yükleniyor, 2 saniye bekleyin...');setTimeout(loginWithGoogle,2000);return;}
+  const {signInWithPopup, auth, provider} = window._fb;
+  signInWithPopup(auth, provider)
     .then(result=>{
       const u=result.user;
-      currentUser={id:u.uid,name:u.displayName||u.email.split('@')[0],email:u.email,picture:u.photoURL,auth:'google'};
+      currentUser={
+        id:u.uid,
+        name:u.displayName||(u.email?u.email.split('@')[0]:'Oyuncu'),
+        email:u.email||'',
+        picture:u.photoURL||null,
+        auth:'google'
+      };
       localStorage.setItem('kartArenaUser',JSON.stringify(currentUser));
-      loadFirebaseSessions();showSessions();
+      loadFirebaseSessions();
+      showSessions();
     })
-    .catch(e=>{showToast('Google giriş hatası: '+e.message);});
+    .catch(e=>{
+      console.error('Google login error:',e);
+      showToast('Giriş hatası: '+e.code);
+    });
 }
 function loginDemo(){
   const names=['Mehmet','Ayşe','Ali','Fatma','Can','Zeynep','Emre','Selin'];
@@ -1843,6 +1830,5 @@ function showToast(msg){const t=document.getElementById('toast');t.textContent=m
 function addLog(msg,type,logId='gameLog'){const log=document.getElementById(logId);if(!log)return;const d=document.createElement('div');d.className='log-'+(type||'event');d.textContent=msg;log.insertBefore(d,log.firstChild);while(log.children.length>30)log.removeChild(log.lastChild);}
 function clearLog(logId='gameLog'){const l=document.getElementById(logId);if(l)l.innerHTML='';}
 </script>
-
 </body>
 </html>
