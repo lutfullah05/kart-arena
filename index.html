@@ -6,42 +6,64 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Game World</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://accounts.google.com/gsi/client" async defer></script>
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getDatabase, ref, set, get, push, onValue, off, update, remove, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+<!-- Firebase compat — iOS Safari tam uyumlu -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script>
+(function(){
+  try {
+    const firebaseConfig = {
+      apiKey: "AIzaSyDqJ_luoz1l_TBD874R82rv0e6Yf8sXhiw",
+      authDomain: "realtime-database-674e5.firebaseapp.com",
+      databaseURL: "https://realtime-database-674e5-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "realtime-database-674e5",
+      storageBucket: "realtime-database-674e5.firebasestorage.app",
+      messagingSenderId: "425692861435",
+      appId: "1:425692861435:web:ffdbbfe67b9f7637b6b15e"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.database();
+    const provider = new firebase.auth.GoogleAuthProvider();
 
-const firebaseConfig = {
-apiKey: “AIzaSyDqJ_luoz1l_TBD874R82rv0e6Yf8sXhiw”,
-authDomain: “realtime-database-674e5.firebaseapp.com”,
-databaseURL: “https://realtime-database-674e5-default-rtdb.europe-west1.firebasedatabase.app”,
-projectId: “realtime-database-674e5”,
-storageBucket: “realtime-database-674e5.firebasestorage.app”,
-messagingSenderId: “425692861435”,
-appId: “1:425692861435:web:ffdbbfe67b9f7637b6b15e”
+```
+// Compat API wrapper — eski kod ile aynı arayüz
+window._fb = {
+  auth, db, provider,
+  signInWithPopup: (a,p) => a.signInWithPopup(p),
+  signOut: (a) => a.signOut(),
+  onAuthStateChanged: (a,cb) => a.onAuthStateChanged(cb),
+  ref: (db,path) => db.ref(path),
+  set: (ref,val) => ref.set(val),
+  get: (ref) => ref.once('value'),
+  push: (ref,val) => val!==undefined ? ref.push(val) : ref.push(),
+  onValue: (ref,cb) => { ref.on('value', snap=>cb(snap)); return ref; },
+  off: (ref) => { if(ref&&ref.off) ref.off(); },
+  update: (ref,val) => ref.update(val),
+  remove: (ref) => ref.remove(),
+  serverTimestamp: () => firebase.database.ServerValue.TIMESTAMP
 };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getDatabase(app);
-const provider = new GoogleAuthProvider();
-
-window._fb = { auth, db, ref, set, get, push, onValue, off, update, remove, signInWithPopup, signOut, provider, onAuthStateChanged, serverTimestamp };
-
-onAuthStateChanged(auth, user => {
-if(user){
-window.currentUser = {
-id: user.uid,
-name: user.displayName || (user.email ? user.email.split(”@”)[0] : “Oyuncu”),
-email: user.email,
-picture: user.photoURL,
-auth: “google”
-};
-window._fbReady = true;
-if(window._onAuthReady) window._onAuthReady();
-}
+auth.onAuthStateChanged(user => {
+  if(user){
+    window.currentUser = {
+      id: user.uid,
+      name: user.displayName || (user.email ? user.email.split('@')[0] : 'Oyuncu'),
+      email: user.email,
+      picture: user.photoURL,
+      auth: 'google'
+    };
+    window._fbReady = true;
+    if(window._onAuthReady) window._onAuthReady();
+  }
 });
+```
+
+} catch(e) {
+console.warn(‘Firebase yüklenemedi:’, e);
+}
+})();
 </script>
 
 <style>
@@ -86,6 +108,11 @@ body{
 .bc:nth-child(4){animation-delay:.45s;transform:rotate(9deg);}
 .bc:nth-child(5){animation-delay:.6s;transform:rotate(18deg) translateY(4px);}
 @keyframes bcFloat{0%,100%{margin-bottom:0;}50%{margin-bottom:12px;}}
+@keyframes uno-badge-pop{
+  0%{transform:translateX(-50%) scale(0);}
+  70%{transform:translateX(-50%) scale(1.2);}
+  100%{transform:translateX(-50%) scale(1);}
+}
 
 .brand-name{font-family:'Syne',sans-serif;font-size:clamp(3rem,9vw,5.5rem);font-weight:800;letter-spacing:-2px;line-height:.9;
   background:linear-gradient(140deg,#fff 0%,var(--accent) 45%,var(--accent2) 100%);
@@ -910,6 +937,14 @@ body{
 
 </head>
 <body>
+<script>
+window.onerror = function(msg, src, line, col, err) {
+  // Script error'u yakala ve kullanıcıya göster
+  const el = document.getElementById('scriptErrBanner');
+  if(el) { el.style.display='block'; el.textContent='⚠️ Yükleme hatası: '+msg; }
+  return false;
+};
+</script>
 <div class="amb amb-1"></div>
 <div class="amb amb-2"></div>
 <div class="amb amb-3"></div>
@@ -925,12 +960,14 @@ body{
   <div class="login-panel">
     <h2>Hoş Geldiniz 👋</h2>
     <p class="hint">Oynamaya başlamak için giriş yap</p>
-    <button class="google-btn" onclick="loginWithGoogle()">
+    <div id="scriptErrBanner" style="display:none;font-size:.7rem;color:#f87;background:rgba(255,50,50,.1);border:1px solid rgba(255,50,50,.2);border-radius:8px;padding:.4rem .7rem;margin-bottom:.5rem;"></div>
+    <p id="fileWarning" style="display:none;font-size:.72rem;color:#f5c842;background:rgba(245,200,66,.1);border:1px solid rgba(245,200,66,.2);border-radius:8px;padding:.4rem .7rem;margin-top:-.5rem;margin-bottom:.5rem;">⚠️ Dosyadan açıldı — Google girişi için GitHub'a yükle veya Demo kullan</p>
+    <button class="google-btn" id="googleLoginBtn" onclick="loginWithGoogle()">
       <svg width="20" height="20" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
       Google ile Giriş Yap
     </button>
     <div class="or-divider">veya</div>
-    <button class="demo-btn" onclick="loginDemo()">🎮 Demo Olarak Dene</button>
+    <button class="demo-btn" onclick="loginDemoNamed()">🎮 Demo Olarak Dene</button>
   </div>
 </div>
 
@@ -1443,6 +1480,11 @@ let myPlayerIndex=-1; // Bu oyuncunun sıradaki indexi
 // ═══════════════════════════════════════════
 window.onload=()=>{
   buildBrandCards();
+  if(location.protocol==='file:'){
+    const w=document.getElementById('fileWarning');if(w)w.style.display='block';
+    const gb=document.getElementById('googleLoginBtn');
+    if(gb){gb.style.opacity='.4';gb.style.cursor='not-allowed';gb.title='GitHub'a yükleyince çalışır';}
+  }
   // Firebase auth hazır olunca
   window._onAuthReady=()=>{
     loadFirebaseSessions();
@@ -1513,6 +1555,21 @@ function loginDemo(){
   localStorage.setItem('kartArenaUser',JSON.stringify(currentUser));
   loadSessions();showSessions();
 }
+function loginDemoNamed(){
+  // İsim sor
+  const modal=document.getElementById('demoNameModal');
+  if(modal){modal.style.display='flex';document.getElementById('demoNameInput').focus();}
+  else loginDemo();
+}
+function confirmDemoName(){
+  const inp=document.getElementById('demoNameInput');
+  const name=(inp&&inp.value.trim())||'Oyuncu';
+  const modal=document.getElementById('demoNameModal');
+  if(modal)modal.style.display='none';
+  currentUser={id:'demo_'+Date.now(),name,email:name+'@demo.com',picture:null,auth:'demo'};
+  localStorage.setItem('kartArenaUser',JSON.stringify(currentUser));
+  loadSessions();showSessions();
+}
 function saveAndContinue(){localStorage.setItem('kartArenaUser',JSON.stringify(currentUser));loadSessions();showSessions();}
 function logout(){
   if(window._fb&&currentUser&&currentUser.auth==='google') window._fb.signOut(window._fb.auth);
@@ -1545,7 +1602,7 @@ function saveSessions(){localStorage.setItem('kartArenaSessions',JSON.stringify(
 function loadFirebaseSessions(){
   if(!window._fb||!currentUser) return;
   const {db,ref,onValue}=window._fb;
-  const sessRef=ref(db,'rooms');
+  const sessRef=window._fb.db.ref('rooms');
   if(_sessionsListener) window._fb.off(_sessionsListener);
   _sessionsListener=onValue(sessRef, snap=>{
     const data=snap.val()||{};
@@ -1561,13 +1618,12 @@ function loadFirebaseSessions(){
 }
 async function saveSessionToFirebase(sess){
   if(!window._fb) return;
-  const {db,ref,set}=window._fb;
-  await set(ref(db,`rooms/${sess.id}`),sess);
+  await window._fb.db.ref(`rooms/${sess.id}`).set(sess);
 }
 async function updateRoomInFirebase(roomId,data){
   if(!window._fb) return;
   const {db,ref,update}=window._fb;
-  await update(ref(db,`rooms/${roomId}`),data);
+  await window._fb.db.ref(`rooms/${roomId}`).update(data);
 }
 function showSessions(){
   showScreen('sessionsScreen');
@@ -1633,12 +1689,12 @@ async function joinOnlineRoom(sess){
   if(!window._fb||!currentUser) return;
   const {db,ref,update,get}=window._fb;
   // Odanın güncel halini çek
-  const snap=await get(ref(db,`rooms/${sess.id}`));
+  const snap=await window._fb.db.ref(`rooms/${sess.id}`).once("value");
   const roomData=snap.val()||sess;
   // Oyuncuyu odaya ekle
   const members=roomData.members||{};
   members[currentUser.id]={name:currentUser.name,picture:currentUser.picture||null,joinedAt:Date.now()};
-  await update(ref(db,`rooms/${sess.id}`),{members});
+  await window._fb.db.ref(`rooms/${sess.id}`).update({members});
   pendingSession={...roomData,id:sess.id,online:true};
   // Oyun zaten başlamışsa direkt gir
   if(roomData.status==='playing'&&roomData.gameState){
@@ -1692,7 +1748,7 @@ function listenOnlineLobby(roomId){
   if(!window._fb) return;
   const {db,ref,onValue}=window._fb;
   if(_lobbyListener) window._fb.off(_lobbyListener);
-  _lobbyListener=onValue(ref(db,`rooms/${roomId}`), snap=>{
+  _lobbyListener=window._fb.db.ref(`rooms/${roomId}`).on("value", snap=>{
     const room=snap.val();
     if(!room) return;
     // Üyeleri göster
@@ -1727,7 +1783,7 @@ async function startOnlineGame(){
   if(!window._fb||!currentUser) return;
   const room=pendingSession;
   const {db,ref,update,get}=window._fb;
-  const snap=await get(ref(db,`rooms/${room.id}`));
+  const snap=await window._fb.db.ref(`rooms/${room.id}`).once("value");
   const roomData=snap.val();
   const members=roomData.members||{};
   const memberList=Object.values(members);
@@ -1739,7 +1795,7 @@ async function startOnlineGame(){
   }
   // UNO oyununu Firebase'de başlat
   const gameState=buildOnlineUNOState(players);
-  await update(ref(db,`rooms/${room.id}`),{
+  await window._fb.db.ref(`rooms/${room.id}`).update({
     status:'playing',players,maxPlayers:lobbyCount,gameState
   });
 }
@@ -1801,10 +1857,9 @@ async function openLobby(){
   closeModal();
   if(isOnline && window._fb){
     // Firebase'e oda oluştur
-    const {db,ref,set}=window._fb;
     const members={};
     members[currentUser.id]={name:currentUser.name,picture:currentUser.picture||null,joinedAt:Date.now()};
-    await set(ref(window._fb.db,`rooms/${roomId}`),{
+    await window._fb.db.ref(`rooms/${roomId}`).set({
       id:roomId,game:selectedGame,name,status:'waiting',
       maxPlayers:4,createdBy:currentUser.id,online:true,members,
       createdAt:Date.now()
@@ -1882,8 +1937,7 @@ function backToSessionsFromLobby(){
 }
 async function joinByCode(code){
   if(!window._fb||!currentUser){showToast('Önce Google ile giriş yapın');return;}
-  const {db,ref,get}=window._fb;
-  const snap=await get(ref(db,'rooms'));
+  const snap=await window._fb.db.ref('rooms').once("value");
   if(!snap.val()){showToast('Oda bulunamadı');return;}
   const rooms=snap.val();
   const entry=Object.entries(rooms).find(([id])=>id.slice(-6).toUpperCase()===code);
@@ -1995,7 +2049,7 @@ function listenOnlineUNO(roomId){
   if(!window._fb) return;
   const {db,ref,onValue}=window._fb;
   if(_roomListener) window._fb.off(_roomListener);
-  _roomListener=onValue(ref(db,`rooms/${roomId}/gameState`), snap=>{
+  _roomListener=window._fb.db.ref(`rooms/${roomId}/gameState`).on("value", snap=>{
     const gs=snap.val();
     if(!gs) return;
     syncOnlineUNO(gs);
@@ -2020,7 +2074,6 @@ function syncOnlineUNO(gs){
 }
 async function pushOnlineUNOState(){
   if(!currentSession||!currentSession.online||!window._fb) return;
-  const {db,ref,set}=window._fb;
   const gs={
     deck:unoDeck,discard:unoDiscard,hands:unoHands,
     turn:unoTurn,dir:unoDir,currentColor:unoCurrentColor,
@@ -2029,7 +2082,7 @@ async function pushOnlineUNOState(){
     players:currentSession.players,started:true,
     lastUpdated:Date.now()
   };
-  await set(ref(db,`rooms/${currentSession.id}/gameState`),gs);
+  await window._fb.db.ref(`rooms/${currentSession.id}/gameState`).set(gs);
 }
 
 // ═══════════════════════════════════════════
@@ -2178,7 +2231,12 @@ function renderUNO(){
   const selfB=document.getElementById('selfBadge');
   const myTurnNow=pl[unoTurn]===currentUser.name;
   if(selfN) selfN.textContent='👤 '+currentUser.name;
-  if(selfC) selfC.textContent=(unoHands[currentUser.name]||[]).length+' kart';
+  const myCards=(unoHands[currentUser.name]||[]).length;
+  const mySaidUno=unoSaidUNO[currentUser.name];
+  let selfStatus='';
+  if(myCards===1 && mySaidUno===true) selfStatus=' <span style="background:#E3001B;color:#fff;font-size:.6rem;font-weight:900;padding:.1rem .4rem;border-radius:20px;margin-left:.3rem;box-shadow:0 0 8px rgba(227,0,27,.7);">📢 UNO!</span>';
+  else if(myCards===1 && mySaidUno===false) selfStatus=' <span style="background:#ff6600;color:#fff;font-size:.6rem;font-weight:900;padding:.1rem .4rem;border-radius:20px;margin-left:.3rem;animation:glow-pulse .5s infinite alternate;">⚠️ UNO DE!</span>';
+  if(selfC) selfC.innerHTML=myCards+' kart'+selfStatus;
   if(selfB){selfB.classList.toggle('my-turn',myTurnNow);}
 
   // Rakipleri oval masaya yerleştir — avatar + yelpaze kartlar
@@ -2219,9 +2277,26 @@ function renderUNO(){
     const seat=document.createElement('div');seat.className='pp-seat';
     seat.style.left=lp+'%';seat.style.top=tp+'%';
 
+    const saidIt = unoSaidUNO[p]===true;
+    const didntSay = unoSaidUNO[p]===false && cardCount===1;
+    const unoBadge = saidIt
+      ? `<div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);
+          background:linear-gradient(135deg,#E3001B,#ff4444);color:#fff;
+          font-size:.58rem;font-weight:900;padding:.15rem .45rem;border-radius:20px;
+          box-shadow:0 0 12px rgba(227,0,27,.8);white-space:nowrap;z-index:20;
+          animation:uno-badge-pop .3s cubic-bezier(.34,1.56,.64,1);">📢 UNO!</div>`
+      : didntSay
+      ? `<div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);
+          background:linear-gradient(135deg,#ff6600,#cc3300);color:#fff;
+          font-size:.58rem;font-weight:900;padding:.15rem .45rem;border-radius:20px;
+          box-shadow:0 0 12px rgba(255,100,0,.8);white-space:nowrap;z-index:20;
+          animation:glow-pulse .5s ease-in-out infinite alternate;">🚨 UNO?</div>`
+      : '';
     const ppDiv=document.createElement('div');
     ppDiv.className='pp'+(isActive?' active':'');
+    ppDiv.style.position='relative';
     ppDiv.innerHTML=`
+      ${unoBadge}
       <div class="pp-fan">${fanSVG}</div>
       <div class="pp-avatar">${avatarContent}</div>
       <div class="pp-label">${warn}${p}</div>
@@ -2440,18 +2515,11 @@ function nextUnoTurn(){
   // (sadece insan oyuncu için — botlar zaten delay ile yakalanabilir)
   // Bu kural: rakip sıraya girmeden UNO denebilir, sıra geçince son şans
   unoTurn=(unoTurn+unoDir+n*10)%n;unoPhase='play';
-  // Sıra geçti — UNO demeyenin sırası tekrar geldiyse pencere kapanır
-  const currentPlayer=currentSession.players[(unoTurn+unoDir+currentSession.players.length*10)%currentSession.players.length];
-  Object.keys(unoSaidUNO).forEach(p=>{
-    // Sadece şu an sırası gelen kişi UNO demediyse kapat (kendi sırası geldi = son şans geçti)
-    if(unoSaidUNO[p]===false && p===currentSession.players[unoTurn]){
-      // Kendi sırası geldi, otomatik +2 ceza
-      for(let i=0;i<2;i++){if(unoDeck.length===0)reshuffleUnoDeck();unoHands[p].push(unoDeck.pop());}
-      unoSaidUNO[p]=null;
-      addLog(p+' UNO demedi — 2 ceza kartı!','event');
-      showEventBanner('⚠️', p+' CEZA ALDI!', 'UNO demeden sırası geldi +2 kart', '#E3001B');
-    }
-  });
+  // Sıra geçti — UNO demeyenin sırası geldiyse pencere kapanır (kart oynarsa sıfırlanır)
+  const nowPlaying=currentSession.players[unoTurn];
+  if(unoSaidUNO[nowPlaying]===false && (unoHands[nowPlaying]||[]).length>1){
+    unoSaidUNO[nowPlaying]=null; // 1 karttan fazlaysa zaten geçti
+  }
   renderUNO();scheduleUnoBot();
   // Sıra sana geldiyse bildir ve sayacı başlat
   if(currentSession.players[unoTurn]===currentUser.name){
@@ -2713,7 +2781,7 @@ function renderCatchSuspects(){
   box.innerHTML='';
   const myName=currentUser.name;
   const suspects=currentSession.players.filter(p=>
-    p!==myName&&(unoHands[p]||[]).length===1&&unoSaidUNO[p]!==true
+    p!==myName&&(unoHands[p]||[]).length===1&&unoSaidUNO[p]===false
   );
   if(suspects.length===0){
     box.innerHTML='<div class="no-suspect">✅ Şu an yakalanacak kimse yok</div>';return;
@@ -2741,7 +2809,7 @@ function updateCatchUnoBtn(){
   if(!currentSession||!unoHands)return;
   const myName=currentUser.name;
   const count=currentSession.players.filter(p=>
-    p!==myName&&(unoHands[p]||[]).length===1&&unoSaidUNO[p]!==true
+    p!==myName&&(unoHands[p]||[]).length===1&&unoSaidUNO[p]===false
   ).length;
   const wrap=document.getElementById('catchUnoWrap');
   const badge=document.getElementById('catchBadge');
@@ -2937,7 +3005,7 @@ function finishUnoRound(winner){
   if(currentSession){
     if(currentSession.online&&window._fb){
       const {db,ref,update}=window._fb;
-      update(ref(db,`rooms/${currentSession.id}`),{status:'roundFinished',lastWinner:winner});
+      window._fb.db.ref(`rooms/${currentSession.id}`).update({status:'roundFinished',lastWinner:winner});
     } else {
       currentSession.status='finished';saveSessions();
     }
@@ -3062,8 +3130,8 @@ function closeWin(){
         if(currentSession.createdBy===currentUser.id){
           const gs=buildOnlineUNOState(currentSession.players);
           const {db,ref,set,update}=window._fb;
-          set(ref(db,`rooms/${currentSession.id}/gameState`),gs);
-          update(ref(db,`rooms/${currentSession.id}`),{status:'playing'});
+          window._fb.db.ref(`rooms/${currentSession.id}/gameState`).set(gs);
+          window._fb.db.ref(`rooms/${currentSession.id}`).update({status:'playing'});
         }
         // Diğerleri gameState listener'dan otomatik güncellenir
       } else {
