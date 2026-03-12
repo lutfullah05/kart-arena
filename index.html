@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
@@ -12,13 +13,13 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChang
 import { getDatabase, ref, set, get, push, onValue, off, update, remove, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDqJ_luoz1l_TBD874R82rv0e6Yf8sXhiw",
-  authDomain: "realtime-database-674e5.firebaseapp.com",
-  databaseURL: "https://realtime-database-674e5-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "realtime-database-674e5",
-  storageBucket: "realtime-database-674e5.firebasestorage.app",
-  messagingSenderId: "425692861435",
-  appId: "1:425692861435:web:ffdbbfe67b9f7637b6b15e"
+apiKey: “AIzaSyDqJ_luoz1l_TBD874R82rv0e6Yf8sXhiw”,
+authDomain: “realtime-database-674e5.firebaseapp.com”,
+databaseURL: “https://realtime-database-674e5-default-rtdb.europe-west1.firebasedatabase.app”,
+projectId: “realtime-database-674e5”,
+storageBucket: “realtime-database-674e5.firebasestorage.app”,
+messagingSenderId: “425692861435”,
+appId: “1:425692861435:web:ffdbbfe67b9f7637b6b15e”
 };
 
 const app = initializeApp(firebaseConfig);
@@ -29,19 +30,20 @@ const provider = new GoogleAuthProvider();
 window._fb = { auth, db, ref, set, get, push, onValue, off, update, remove, signInWithPopup, signOut, provider, onAuthStateChanged, serverTimestamp };
 
 onAuthStateChanged(auth, user => {
-  if(user){
-    window.currentUser = {
-      id: user.uid,
-      name: user.displayName || (user.email ? user.email.split("@")[0] : "Oyuncu"),
-      email: user.email,
-      picture: user.photoURL,
-      auth: "google"
-    };
-    window._fbReady = true;
-    if(window._onAuthReady) window._onAuthReady();
-  }
+if(user){
+window.currentUser = {
+id: user.uid,
+name: user.displayName || (user.email ? user.email.split(”@”)[0] : “Oyuncu”),
+email: user.email,
+picture: user.photoURL,
+auth: “google”
+};
+window._fbReady = true;
+if(window._onAuthReady) window._onAuthReady();
+}
 });
 </script>
+
 <style>
 :root{
   --bg:#0f1a0f;--s1:#142014;--s2:#182818;--s3:#1e321e;--s4:#243c24;
@@ -894,7 +896,9 @@ body{
   #unoGame,#okeyGame{padding:.8rem;}
 }
 </style>
+
   <!-- PWA -->
+
   <meta name="theme-color" content="#0a1a0a">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -911,6 +915,7 @@ body{
 <div class="amb amb-3"></div>
 
 <!-- ════ LOGIN ════ -->
+
 <div id="loginScreen" class="screen active">
   <div class="login-brand">
     <div class="brand-cards" id="brandCards"></div>
@@ -930,6 +935,7 @@ body{
 </div>
 
 <!-- ════ SESSIONS ════ -->
+
 <div id="sessionsScreen" class="screen">
   <nav class="nav">
     <span class="nav-logo">🎮 GAME WORLD</span>
@@ -951,6 +957,7 @@ body{
 </div>
 
 <!-- ════ LOBBY ════ -->
+
 <div id="lobbyScreen" class="screen">
   <div class="lobby-wrap">
     <div class="lobby-hd">
@@ -961,27 +968,31 @@ body{
       </div>
     </div>
 
-    <div class="lsec">
-      <div class="lsec-label">Oyuncu Sayısı (2–6)</div>
-      <div class="cnt-grid" id="cntGrid"></div>
-    </div>
+```
+<div class="lsec">
+  <div class="lsec-label">Oyuncu Sayısı (2–6)</div>
+  <div class="cnt-grid" id="cntGrid"></div>
+</div>
 
-    <div class="lsec">
-      <div class="lsec-label">Masa</div>
-      <div class="slot-list" id="slotList"></div>
-    </div>
+<div class="lsec">
+  <div class="lsec-label">Masa</div>
+  <div class="slot-list" id="slotList"></div>
+</div>
 
-    <div id="lobbyRoomCode" style="display:none;align-items:center;gap:.6rem;background:rgba(245,200,66,.07);border:1px solid rgba(245,200,66,.2);border-radius:12px;padding:.6rem 1rem;margin:0 0 .5rem;"></div>
-    <div class="lobby-foot">
-      <button class="btn btn-ghost" onclick="backToSessionsFromLobby()">← Geri</button>
-      <button class="btn btn-primary" id="lobbyStartBtn" onclick="startFromLobby()">Oyunu Başlat 🎮</button>
-    </div>
+<div id="lobbyRoomCode" style="display:none;align-items:center;gap:.6rem;background:rgba(245,200,66,.07);border:1px solid rgba(245,200,66,.2);border-radius:12px;padding:.6rem 1rem;margin:0 0 .5rem;"></div>
+<div class="lobby-foot">
+  <button class="btn btn-ghost" onclick="backToSessionsFromLobby()">← Geri</button>
+  <button class="btn btn-primary" id="lobbyStartBtn" onclick="startFromLobby()">Oyunu Başlat 🎮</button>
+</div>
+```
+
   </div>
 </div>
 
 <!-- ════ GAME ════ -->
 
   <!-- SOHBET PANELİ -->
+
   <div class="chat-panel" id="chatPanel">
     <div class="chat-header">
       <h3>💬 Sohbet</h3>
@@ -1060,118 +1071,126 @@ body{
     <div style="display:flex;gap:.4rem;margin-left:auto;flex-wrap:wrap;">
       <div class="chip">Yön <span id="directionEl">→</span></div>
       <div class="chip">Ceza <span id="drawCountEl">—</span></div>
-      
-    </div>
+
+```
+</div>
+```
+
   </nav>
 
   <!-- UNO — Poker Masası Düzeni -->
+
   <div id="unoGame">
     <div class="poker-table-wrap">
 
-      <!-- OVAL MASA: rakipler buraya JS ile eklenir -->
-      <div class="poker-arena" id="pokerArena">
-        <!-- Masa merkezi: deste + üst kart -->
-        <div class="poker-center-cards">
+```
+  <!-- OVAL MASA: rakipler buraya JS ile eklenir -->
+  <div class="poker-arena" id="pokerArena">
+    <!-- Masa merkezi: deste + üst kart -->
+    <div class="poker-center-cards">
 
-          <div class="poker-cards-row">
-            <div style="text-align:center;">
-              <div style="font-size:.6rem;color:rgba(255,255,255,.55);margin-bottom:.5rem;font-weight:900;letter-spacing:.15em;text-transform:uppercase;text-shadow:0 0 8px rgba(255,255,255,.2);">DESTE</div>
-              <div class="deck-btn" id="deckBtn" onclick="drawUnoCard()" title="Kart çek" style="width:96px;height:138px;filter:drop-shadow(0 8px 24px rgba(0,0,0,.7));">
-                <div id="deckSvg" style="pointer-events:none;display:block;width:96px;height:138px;line-height:0;"></div>
-              </div>
-            </div>
-            <div style="text-align:center;">
-              <div style="font-size:.6rem;color:rgba(255,255,255,.55);margin-bottom:.5rem;font-weight:900;letter-spacing:.15em;text-transform:uppercase;text-shadow:0 0 8px rgba(255,255,255,.2);">ORTADAKI</div>
-              <div class="uno-card" id="topCard" style="width:96px;height:138px;border-radius:12px;filter:drop-shadow(0 8px 28px rgba(0,0,0,.6));transition:filter .3s;"></div>
-            </div>
+      <div class="poker-cards-row">
+        <div style="text-align:center;">
+          <div style="font-size:.6rem;color:rgba(255,255,255,.55);margin-bottom:.5rem;font-weight:900;letter-spacing:.15em;text-transform:uppercase;text-shadow:0 0 8px rgba(255,255,255,.2);">DESTE</div>
+          <div class="deck-btn" id="deckBtn" onclick="drawUnoCard()" title="Kart çek" style="width:96px;height:138px;filter:drop-shadow(0 8px 24px rgba(0,0,0,.7));">
+            <div id="deckSvg" style="pointer-events:none;display:block;width:96px;height:138px;line-height:0;"></div>
           </div>
-          <div class="color-picker" id="colorPicker">
-            <span style="font-size:.7rem;color:var(--muted2);font-weight:800;">Renk:</span>
-            <button class="cpbtn" style="background:#E3001B;width:34px;height:34px;" onclick="chooseColor('red')"></button>
-            <button class="cpbtn" style="background:#0066B3;width:34px;height:34px;" onclick="chooseColor('blue')"></button>
-            <button class="cpbtn" style="background:#00A651;width:34px;height:34px;" onclick="chooseColor('green')"></button>
-            <button class="cpbtn" style="background:#FFCF00;width:34px;height:34px;" onclick="chooseColor('yellow')"></button>
-          </div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:.6rem;color:rgba(255,255,255,.55);margin-bottom:.5rem;font-weight:900;letter-spacing:.15em;text-transform:uppercase;text-shadow:0 0 8px rgba(255,255,255,.2);">ORTADAKI</div>
+          <div class="uno-card" id="topCard" style="width:96px;height:138px;border-radius:12px;filter:drop-shadow(0 8px 28px rgba(0,0,0,.6));transition:filter .3s;"></div>
         </div>
       </div>
+      <div class="color-picker" id="colorPicker">
+        <span style="font-size:.7rem;color:var(--muted2);font-weight:800;">Renk:</span>
+        <button class="cpbtn" style="background:#E3001B;width:34px;height:34px;" onclick="chooseColor('red')"></button>
+        <button class="cpbtn" style="background:#0066B3;width:34px;height:34px;" onclick="chooseColor('blue')"></button>
+        <button class="cpbtn" style="background:#00A651;width:34px;height:34px;" onclick="chooseColor('green')"></button>
+        <button class="cpbtn" style="background:#FFCF00;width:34px;height:34px;" onclick="chooseColor('yellow')"></button>
+      </div>
+    </div>
+  </div>
 
-      <!-- ALTTA: SEN -->
-      <div class="poker-self-area">
-        <!-- Bilgi + badge tek satır -->
-        <div style="display:flex;align-items:center;gap:.4rem;padding:.2rem .4rem;flex-wrap:wrap;">
-          <div class="poker-self-badge" id="selfBadge" style="flex-shrink:0;">
-            <span id="selfName">👤</span>
-            <span class="poker-card-count" id="selfCount">7 kart</span>
-          </div>
-          <div class="turn-badge" id="unoTurnEl" style="font-size:.66rem;padding:.18rem .65rem;">⏳</div>
-          <div id="activeColorBar" style="display:none;align-items:center;gap:.3rem;
-            background:rgba(0,0,0,.5);border-radius:20px;padding:.16rem .5rem;border:1px solid #0004;">
-            <div id="activeColorDot" style="width:11px;height:11px;border-radius:50%;flex-shrink:0;"></div>
-            <span id="activeColorText" style="font-size:.6rem;font-weight:800;color:#fff;"></span>
-          </div>
-          <div id="timerWrap" style="display:none;">
-            <div class="turn-timer-ring" style="width:30px;height:30px;">
-              <svg width="30" height="30" viewBox="0 0 44 44">
-                <circle class="timer-track" cx="22" cy="22" r="18"/>
-                <circle class="timer-arc" id="timerArc" cx="22" cy="22" r="18"/>
-              </svg>
-              <div class="timer-num" id="timerNum" style="font-size:.64rem;">15</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- El -->
-        <div class="hand-area" id="unoHand"></div>
-
-        <!-- Aksiyonlar -->
-        <div class="game-actions" style="margin-top:auto;padding:.4rem 0 .3rem;">
-          <button class="act-btn act-uno" id="unoBtn" onclick="sayUNO()">📢 UNO!</button>
-          <button class="act-btn" onclick="document.getElementById('rulesModal').classList.add('open')">📖 Kurallar</button>
-          <div class="catch-uno-wrap" id="catchUnoWrap" style="display:none;">
-            <button class="catch-uno-btn" id="catchUnoBtn" onclick="openCatchUno()">
-              🚨 Yakala! <span class="catch-badge" id="catchBadge">1</span>
-            </button>
-          </div>
-          <button class="act-btn" onclick="toggleChat()" style="background:rgba(20,60,25,.8);">💬</button>
-        </div>
-
-        <!-- Emoji & Laf bar — her zaman masada görünür -->
-        <div class="reaction-bar">
-          <!-- Emojiler -->
-          <div class="rbar-emojis">
-            <button class="rbar-emoji" onclick="sendTaunt('😂')">😂</button>
-            <button class="rbar-emoji" onclick="sendTaunt('🔥')">🔥</button>
-            <button class="rbar-emoji" onclick="sendTaunt('😈')">😈</button>
-            <button class="rbar-emoji" onclick="sendTaunt('💀')">💀</button>
-            <button class="rbar-emoji" onclick="sendTaunt('🤯')">🤯</button>
-            <button class="rbar-emoji" onclick="sendTaunt('😎')">😎</button>
-            <button class="rbar-emoji" onclick="sendTaunt('🫵')">🫵</button>
-            <button class="rbar-emoji" onclick="sendTaunt('🤡')">🤡</button>
-          </div>
-          <!-- Laf seçici butonu -->
-          <button class="rbar-laf-toggle" onclick="toggleLafMenu()">💬 Laf At ▾</button>
-        </div>
-
-        <!-- Laf menüsü (açılır) -->
-        <div class="laf-popup" id="lafPopup">
-          <button class="laf-item" onclick="sendTaunt('Hadi kardeşim, satranç oynamıyoruz 😴')">Hadi kardeşim, satranç oynamıyoruz 😴</button>
-          <button class="laf-item" onclick="sendTaunt('Hep aynı kişide bekliyoruz ya... 🥱')">Hep aynı kişide bekliyoruz ya... 🥱</button>
-          <button class="laf-item" onclick="sendTaunt('Kartlarını saydım, durumun iyi değil 😂')">Kartlarını saydım, durumun iyi değil 😂</button>
-          <button class="laf-item" onclick="sendTaunt('Şans değil bu, ben iyiyim 😎')">Şans değil bu, ben iyiyim 😎</button>
-          <button class="laf-item" onclick="sendTaunt('Masadan kalkmak zorunda kalacaksın 👑')">Masadan kalkmak zorunda kalacaksın 👑</button>
-          <button class="laf-item" onclick="sendTaunt('+4 geliyor, hazır mısın? 😈')">+4 geliyor, hazır mısın? 😈</button>
-          <button class="laf-item" onclick="sendTaunt('Bu kart sana özel yapıldı 💀')">Bu kart sana özel yapıldı 💀</button>
-          <button class="laf-item" onclick="sendTaunt('Nereye kaçacaksın? 🫵')">Nereye kaçacaksın? 🫵</button>
-          <button class="laf-item" onclick="sendTaunt('Telefona mı bakıyorsun ya? 😤')">Telefona mı bakıyorsun ya? 😤</button>
-          <button class="laf-item" onclick="sendTaunt('Güzel gülümseme, son tur bu 🔥')">Güzel gülümseme, son tur bu 🔥</button>
-          <button class="laf-item" onclick="sendTaunt('Seni kurtaracak kart yok burada 😂')">Seni kurtaracak kart yok burada 😂</button>
+  <!-- ALTTA: SEN -->
+  <div class="poker-self-area">
+    <!-- Bilgi + badge tek satır -->
+    <div style="display:flex;align-items:center;gap:.4rem;padding:.2rem .4rem;flex-wrap:wrap;">
+      <div class="poker-self-badge" id="selfBadge" style="flex-shrink:0;">
+        <span id="selfName">👤</span>
+        <span class="poker-card-count" id="selfCount">7 kart</span>
+      </div>
+      <div class="turn-badge" id="unoTurnEl" style="font-size:.66rem;padding:.18rem .65rem;">⏳</div>
+      <div id="activeColorBar" style="display:none;align-items:center;gap:.3rem;
+        background:rgba(0,0,0,.5);border-radius:20px;padding:.16rem .5rem;border:1px solid #0004;">
+        <div id="activeColorDot" style="width:11px;height:11px;border-radius:50%;flex-shrink:0;"></div>
+        <span id="activeColorText" style="font-size:.6rem;font-weight:800;color:#fff;"></span>
+      </div>
+      <div id="timerWrap" style="display:none;">
+        <div class="turn-timer-ring" style="width:30px;height:30px;">
+          <svg width="30" height="30" viewBox="0 0 44 44">
+            <circle class="timer-track" cx="22" cy="22" r="18"/>
+            <circle class="timer-arc" id="timerArc" cx="22" cy="22" r="18"/>
+          </svg>
+          <div class="timer-num" id="timerNum" style="font-size:.64rem;">15</div>
         </div>
       </div>
     </div>
-    <div class="game-log" id="gameLog" style="display:none;"></div>
+
+    <!-- El -->
+    <div class="hand-area" id="unoHand"></div>
+
+    <!-- Aksiyonlar -->
+    <div class="game-actions" style="margin-top:auto;padding:.4rem 0 .3rem;">
+      <button class="act-btn act-uno" id="unoBtn" onclick="sayUNO()">📢 UNO!</button>
+      <button class="act-btn" onclick="document.getElementById('rulesModal').classList.add('open')">📖 Kurallar</button>
+      <div class="catch-uno-wrap" id="catchUnoWrap" style="display:none;">
+        <button class="catch-uno-btn" id="catchUnoBtn" onclick="openCatchUno()">
+          🚨 Yakala! <span class="catch-badge" id="catchBadge">1</span>
+        </button>
+      </div>
+      <button class="act-btn" onclick="toggleChat()" style="background:rgba(20,60,25,.8);">💬</button>
+    </div>
+
+    <!-- Emoji & Laf bar — her zaman masada görünür -->
+    <div class="reaction-bar">
+      <!-- Emojiler -->
+      <div class="rbar-emojis">
+        <button class="rbar-emoji" onclick="sendTaunt('😂')">😂</button>
+        <button class="rbar-emoji" onclick="sendTaunt('🔥')">🔥</button>
+        <button class="rbar-emoji" onclick="sendTaunt('😈')">😈</button>
+        <button class="rbar-emoji" onclick="sendTaunt('💀')">💀</button>
+        <button class="rbar-emoji" onclick="sendTaunt('🤯')">🤯</button>
+        <button class="rbar-emoji" onclick="sendTaunt('😎')">😎</button>
+        <button class="rbar-emoji" onclick="sendTaunt('🫵')">🫵</button>
+        <button class="rbar-emoji" onclick="sendTaunt('🤡')">🤡</button>
+      </div>
+      <!-- Laf seçici butonu -->
+      <button class="rbar-laf-toggle" onclick="toggleLafMenu()">💬 Laf At ▾</button>
+    </div>
+
+    <!-- Laf menüsü (açılır) -->
+    <div class="laf-popup" id="lafPopup">
+      <button class="laf-item" onclick="sendTaunt('Hadi kardeşim, satranç oynamıyoruz 😴')">Hadi kardeşim, satranç oynamıyoruz 😴</button>
+      <button class="laf-item" onclick="sendTaunt('Hep aynı kişide bekliyoruz ya... 🥱')">Hep aynı kişide bekliyoruz ya... 🥱</button>
+      <button class="laf-item" onclick="sendTaunt('Kartlarını saydım, durumun iyi değil 😂')">Kartlarını saydım, durumun iyi değil 😂</button>
+      <button class="laf-item" onclick="sendTaunt('Şans değil bu, ben iyiyim 😎')">Şans değil bu, ben iyiyim 😎</button>
+      <button class="laf-item" onclick="sendTaunt('Masadan kalkmak zorunda kalacaksın 👑')">Masadan kalkmak zorunda kalacaksın 👑</button>
+      <button class="laf-item" onclick="sendTaunt('+4 geliyor, hazır mısın? 😈')">+4 geliyor, hazır mısın? 😈</button>
+      <button class="laf-item" onclick="sendTaunt('Bu kart sana özel yapıldı 💀')">Bu kart sana özel yapıldı 💀</button>
+      <button class="laf-item" onclick="sendTaunt('Nereye kaçacaksın? 🫵')">Nereye kaçacaksın? 🫵</button>
+      <button class="laf-item" onclick="sendTaunt('Telefona mı bakıyorsun ya? 😤')">Telefona mı bakıyorsun ya? 😤</button>
+      <button class="laf-item" onclick="sendTaunt('Güzel gülümseme, son tur bu 🔥')">Güzel gülümseme, son tur bu 🔥</button>
+      <button class="laf-item" onclick="sendTaunt('Seni kurtaracak kart yok burada 😂')">Seni kurtaracak kart yok burada 😂</button>
+    </div>
+  </div>
+</div>
+<div class="game-log" id="gameLog" style="display:none;"></div>
+```
+
   </div>
 
   <!-- OKEY -->
+
   <div id="okeyGame">
     <div class="players-row" id="okeyPlayers"></div>
     <div class="game-table">
@@ -1208,6 +1227,7 @@ body{
 </div>
 
 <!-- ════ NEW SESSION MODAL ════ -->
+
 <div class="modal-overlay" id="gameSelectModal" onclick="if(event.target===this)this.style.display='none'" style="display:none;align-items:center;justify-content:center;">
   <div class="modal-box" style="max-width:320px;padding:1.4rem;text-align:center;">
     <h3 style="margin:0 0 .3rem;color:#c8f0c0;">Oyun Seç</h3>
@@ -1283,6 +1303,7 @@ body{
 </div>
 
 <!-- ════ RULES MODAL ════ -->
+
 <div class="modal-overlay" id="quitConfirmModal" style="display:none;align-items:center;justify-content:center;">
   <div class="modal-box" style="max-width:320px;padding:1.4rem;text-align:center;">
     <div style="font-size:2rem;margin-bottom:.5rem;">🚪</div>
@@ -1341,6 +1362,7 @@ body{
 </div>
 
 <!-- ════ WIN ════ -->
+
 <div class="win-overlay" id="winOverlay">
   <div class="win-box" style="max-width:540px;">
     <div class="win-emoji" id="winEmoji">🎉</div>
@@ -1367,6 +1389,7 @@ body{
 </div>
 
 <!-- ════ STANDINGS ════ -->
+
 <div class="modal-overlay" id="standingsModal">
   <div class="modal" style="max-width:480px;">
     <h3 id="standingsTitle">📊 Turnuva Puan Tablosu</h3>
@@ -1380,6 +1403,7 @@ body{
 </div>
 
 <!-- Install Banner -->
+
 <div id="installBanner" style="display:none;position:fixed;bottom:16px;left:50%;transform:translateX(-50%);
   z-index:9999;background:linear-gradient(135deg,#1a4a20,#0e2e12);
   border:1.5px solid rgba(80,180,80,.5);border-radius:16px;
@@ -2412,7 +2436,22 @@ function drawUnoCard(){
 }
 function nextUnoTurn(){
   const n=currentSession.players.length;
+  // Sıra geçmeden önce: eğer önceki oyuncu 1 kartla UNO demediyse, otomatik ceza
+  // (sadece insan oyuncu için — botlar zaten delay ile yakalanabilir)
+  // Bu kural: rakip sıraya girmeden UNO denebilir, sıra geçince son şans
   unoTurn=(unoTurn+unoDir+n*10)%n;unoPhase='play';
+  // Sıra geçti — UNO demeyenin sırası tekrar geldiyse pencere kapanır
+  const currentPlayer=currentSession.players[(unoTurn+unoDir+currentSession.players.length*10)%currentSession.players.length];
+  Object.keys(unoSaidUNO).forEach(p=>{
+    // Sadece şu an sırası gelen kişi UNO demediyse kapat (kendi sırası geldi = son şans geçti)
+    if(unoSaidUNO[p]===false && p===currentSession.players[unoTurn]){
+      // Kendi sırası geldi, otomatik +2 ceza
+      for(let i=0;i<2;i++){if(unoDeck.length===0)reshuffleUnoDeck();unoHands[p].push(unoDeck.pop());}
+      unoSaidUNO[p]=null;
+      addLog(p+' UNO demedi — 2 ceza kartı!','event');
+      showEventBanner('⚠️', p+' CEZA ALDI!', 'UNO demeden sırası geldi +2 kart', '#E3001B');
+    }
+  });
   renderUNO();scheduleUnoBot();
   // Sıra sana geldiyse bildir ve sayacı başlat
   if(currentSession.players[unoTurn]===currentUser.name){
@@ -2486,13 +2525,34 @@ function botUnoTurn(){
     else unoCurrentColor=card.color;
     addLog(`${bot}: ${card.color} ${card.value}`,'bot');applyUnoEffect(card);
     if(hand.length===0){ handleUnoLastCard(bot, card); return; }
-    if(hand.length===1)unoSaidUNO[bot]=true;
-    if(card.color==='wild'){renderUNO();nextUnoTurn();}else{nextUnoTurn();}
+    if(hand.length===1){
+      // Botlar %65 ihtimalle UNO der, %35 unutur (yakalanabilir)
+      if(Math.random()<0.65){
+        unoSaidUNO[bot]=true;
+        addLog(bot+': UNO!','bot');
+        showReactionBubble(bot,'📢 UNO!');
+      } else {
+        unoSaidUNO[bot]=false; // UNO demedi — yakalanabilir!
+        addLog(bot+' sessiz kaldı...','event');
+        // Oyuncuya bildirim — yakala!
+        setTimeout(()=>{
+          showEventBanner('🚨', bot+' UNO DEMEDİ!', 'Yakala butonuna bas! +2 ceza!', '#E3001B');
+          updateCatchUnoBtn();
+        }, 300);
+      }
+    }
+    renderUNO(); // Önce render et — oyuncu yakalama şansı görsün
     if(currentSession&&currentSession.online)pushOnlineUNOState();
+    // Kısa gecikme: oyuncu yakalayabilsin
+    const catchDelay=hand.length===1&&unoSaidUNO[bot]===false?1800:400;
+    setTimeout(()=>{
+      if(card.color==='wild'){nextUnoTurn();}else{nextUnoTurn();}
+    }, catchDelay);
   }else{
     const cnt=unoDrawPending>0?unoDrawPending:1;unoDrawPending=0;unoPenaltyType=null;
     for(let i=0;i<cnt;i++){if(unoDeck.length===0)reshuffleUnoDeck();hand.push(unoDeck.pop());}
-    addLog(`${bot}: ${cnt} kart çekti`,'bot');nextUnoTurn();
+    addLog(`${bot}: ${cnt} kart çekti`,'bot');
+    setTimeout(()=>nextUnoTurn(), 350);
   }
 }
 function reshuffleUnoDeck(){const top=unoDiscard.pop();unoDeck=shuffle(unoDiscard);unoDiscard=[top];addLog('Deste karıştırıldı','event');}
@@ -3095,6 +3155,7 @@ function clearLog(logId='gameLog'){const l=document.getElementById(logId);if(l)l
 </script>
 
   <!-- PWA Service Worker + Install Banner -->
+
   <script>
   // Service Worker kaydı
   if('serviceWorker' in navigator){
@@ -3131,5 +3192,7 @@ function clearLog(logId='gameLog'){const l=document.getElementById(logId);if(l)l
     hideInstallBanner();
   }
   </script>
+
 </body>
 </html>
+
