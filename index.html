@@ -314,6 +314,28 @@ body{
   text-shadow:0 0 40px rgba(255,255,255,.02);
 }
 
+/* Yön halkası */
+#directionRing{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:130px;height:130px;
+  pointer-events:none;z-index:2;
+  transition:transform .6s cubic-bezier(.34,1.56,.64,1);
+}
+#directionRing circle{
+  fill:none;stroke:rgba(61,232,122,.12);stroke-width:2;
+}
+#directionRing .dir-arrow{
+  fill:none;stroke:rgba(61,232,122,.55);stroke-width:2.5;
+  stroke-linecap:round;stroke-linejoin:round;
+}
+@keyframes ring-spin-cw  { from{transform:translate(-50%,-50%) rotate(0deg)}   to{transform:translate(-50%,-50%) rotate(360deg)} }
+@keyframes ring-spin-ccw { from{transform:translate(-50%,-50%) rotate(0deg)}   to{transform:translate(-50%,-50%) rotate(-360deg)} }
+.dir-cw  { animation:ring-spin-cw  4s linear infinite; }
+.dir-ccw { animation:ring-spin-ccw 4s linear infinite; }
+@keyframes dir-flash { 0%,100%{opacity:.55} 50%{opacity:1} }
+.dir-flash { animation:dir-flash .4s ease 3; }
+
 /* Koltuklar */
 .pp-seat{
   position:absolute;transform:translate(-50%,-50%);
@@ -411,7 +433,7 @@ body{
 
 /* ══ SOHBET & LAF ATMA ══ */
 /* Sekmeler */
-.chat-tabs{display:flex;border-bottom:1px solid rgba(40,90,50,.4);}
+.chat-tabs{display:flex;border-bottom:1px solid rgba(40,90,50,.4);flex-shrink:0;}
 .chat-tab{
   flex:1;padding:.5rem .3rem;background:none;border:none;
   color:#6a9870;font-size:.72rem;font-weight:800;cursor:pointer;
@@ -419,7 +441,7 @@ body{
   font-family:'Plus Jakarta Sans',sans-serif;
 }
 .chat-tab.active{color:var(--accent2);border-bottom-color:var(--accent2);}
-.tab-content{overflow-y:auto;max-height:170px;}
+.tab-content{overflow-y:auto;flex:1;min-height:0;padding:.3rem;}
 .tab-content.hidden{display:none;}
 /* Emoji grid */
 .emoji-grid{
@@ -433,12 +455,14 @@ body{
 .emoji-btn:hover{background:rgba(40,90,30,.8);transform:scale(1.2);}
 /* Laf listesi */
 .laf-list{display:flex;flex-direction:column;gap:.3rem;padding:.4rem .5rem;}
+.laf-list{display:flex;flex-direction:column;gap:.3rem;padding:.5rem;}
 .laf-btn{
   background:rgba(20,50,25,.7);border:1px solid rgba(50,100,55,.3);
   border-radius:10px;padding:.45rem .7rem;font-size:.72rem;font-weight:700;
   color:#c8f0c0;cursor:pointer;text-align:left;transition:all .18s;
   font-family:'Plus Jakarta Sans',sans-serif;
-}
+
+  cursor:pointer;width:100%;text-align:left;pointer-events:auto;}
 .laf-btn:hover{background:rgba(200,30,50,.2);border-color:rgba(200,30,50,.5);color:#ffaaaa;transform:translateX(3px);}
 /* UNO Ceza paneli */
 .uno-alert-panel{padding:.6rem .7rem;}
@@ -456,12 +480,14 @@ body{
 .suspect-cards{font-size:.7rem;color:#ff6060;font-weight:700;}
 .no-suspect{font-size:.75rem;color:#4a7850;text-align:center;padding:.5rem;}
 .chat-panel{
-  position:fixed;right:0;top:0;bottom:0;width:280px;
-  background:rgba(8,18,10,.97);border-left:1px solid rgba(40,90,50,.5);
-  display:flex;flex-direction:column;z-index:200;
-  transform:translateX(100%);transition:transform .3s cubic-bezier(.34,1.2,.64,1);
+  position:fixed;right:0;top:var(--nav-h,48px);bottom:0;width:min(300px,85vw);
+  background:rgba(8,18,10,.98);border-left:1px solid rgba(61,232,122,.15);
+  display:flex;flex-direction:column;z-index:140;
+  transform:translateX(110%);transition:transform .3s cubic-bezier(.34,1.2,.64,1);
+  pointer-events:none;
+  box-shadow:-4px 0 24px rgba(0,0,0,.6);
 }
-.chat-panel.open{transform:translateX(0);}
+.chat-panel.open{transform:translateX(0);pointer-events:auto;}
 .chat-header{
   padding:.7rem 1rem;border-bottom:1px solid rgba(40,90,50,.4);
   display:flex;align-items:center;justify-content:space-between;
@@ -1100,7 +1126,7 @@ body{
 
   <!-- SOHBET PANELİ -->
 
-  <div class="chat-panel" id="chatPanel" style="display:none;">
+  <div class="chat-panel" id="chatPanel">
     <div class="chat-header">
       <h3>💬 Sohbet</h3>
       <button class="chat-close" onclick="toggleChat()">✕</button>
@@ -1108,7 +1134,7 @@ body{
     <!-- Sekmeler -->
     <div class="chat-tabs">
       <button class="chat-tab active" id="tabEmoji" onclick="switchTab('emoji')">😂 Emoji</button>
-      <button class="chat-tab" id="tabLaf" onclick="switchTab('laf')">🔥 Laf At</button>
+      <button class="chat-tab" id="tabLaf" onclick="switchTab('laf')" style="pointer-events:auto;">🔥 Laf At</button>
       <button class="chat-tab" id="tabUno" onclick="switchTab('uno')">🚨 UNO!</button>
     </div>
     <!-- Emoji sekme -->
@@ -1175,14 +1201,21 @@ body{
   <nav class="game-nav">
     <button class="back-btn" onclick="askQuit()">← Geri</button>
     <span class="game-nav-title" id="gameTitle">—</span>
-    <div style="display:flex;gap:.4rem;margin-left:auto;flex-wrap:wrap;">
-      <div class="chip">Yön <span id="directionEl">→</span></div>
-      <div class="chip">Ceza <span id="drawCountEl">—</span></div>
-
-```
-</div>
-```
-
+    <div style="display:flex;gap:.35rem;margin-left:auto;align-items:center;">
+      <!-- Yön chip — animasyonlu ok -->
+      <div class="chip" id="dirChip" style="display:flex;align-items:center;gap:.25rem;min-width:52px;justify-content:center;">
+        <span id="dirArrowEl" style="font-size:1rem;transition:transform .4s;">↻</span>
+        <span id="directionEl" style="font-size:.65rem;">→</span>
+      </div>
+      <!-- Ceza chip -->
+      <div class="chip" id="penaltyChip" style="display:none;background:rgba(227,0,27,.25);border-color:rgba(227,0,27,.5);">
+        ⚡ <span id="drawCountEl">0</span>
+      </div>
+      <!-- Tur chip -->
+      <div class="chip" style="font-size:.6rem;opacity:.7;">
+        Tur <span id="roundChipEl">1</span>/<span id="roundTotalEl">11</span>
+      </div>
+    </div>
   </nav>
 
   <!-- UNO — Poker Masası Düzeni -->
@@ -1193,6 +1226,24 @@ body{
 ```
   <!-- OVAL MASA: rakipler buraya JS ile eklenir -->
   <div class="poker-arena" id="pokerArena">
+  <!-- Yön halkası -->
+  <svg id="directionRing" viewBox="0 0 130 130">
+    <circle cx="65" cy="65" r="58"/>
+    <!-- Saat yönü oklar -->
+    <g class="dir-arrow" id="arrowsCW">
+      <path d="M65 10 A55 55 0 0 1 110 40"/>
+      <path d="M108 38 l4 4 l-6 1z"/>
+      <path d="M65 120 A55 55 0 0 1 20 90"/>
+      <path d="M22 92 l-4-4 l6-1z"/>
+    </g>
+    <!-- Saat tersine oklar -->
+    <g class="dir-arrow" id="arrowsCCW" style="display:none">
+      <path d="M65 10 A55 55 0 0 0 20 40"/>
+      <path d="M22 38 l-4 4 l6 1z"/>
+      <path d="M65 120 A55 55 0 0 0 110 90"/>
+      <path d="M108 92 l4-4 l-6-1z"/>
+    </g>
+  </svg>
     <!-- Masa merkezi: deste + üst kart -->
     <div class="poker-center-cards">
 
@@ -1799,6 +1850,23 @@ function renderSessions(){
       <div class="sc-sub">${s.game.toUpperCase()} · ${members.length||playerList.length}/${s.maxPlayers||4} oyuncu</div>
       <div class="sc-players">${playerList.map(p=>`<span class="pch">${p}</span>`).join('')}</div>
       ${s.online&&s.createdBy===currentUser?.id?`<div style="margin-top:.5rem;font-size:.72rem;color:var(--muted2);">📋 Oda adını arkadaşlara söyle: <b style="color:var(--accent)">${s.name}</b></div>`:''}`;
+    // Oda sahibine kapat butonu
+    if(s.online && s.createdBy===currentUser?.id && s.status==='waiting'){
+      const closeBtn=document.createElement('button');
+      closeBtn.style.cssText='position:absolute;top:8px;right:8px;background:rgba(200,50,50,.7);border:none;border-radius:50%;width:24px;height:24px;color:#fff;font-size:.75rem;cursor:pointer;z-index:5;display:flex;align-items:center;justify-content:center;';
+      closeBtn.textContent='✕';
+      closeBtn.title='Odayı kapat';
+      closeBtn.onclick=(e)=>{
+        e.stopPropagation();
+        if(confirm('Odayı kapatmak istiyor musun?')){
+          window._fb.db.ref('rooms/'+s.id).remove()
+            .then(()=>showToast('Oda kapatıldı'))
+            .catch(()=>showToast('Hata oluştu'));
+        }
+      };
+      el.style.position='relative';
+      el.appendChild(closeBtn);
+    }
     el.onclick=()=>joinSession(s.id);g.appendChild(el);
   });
   const nc=document.createElement('div');nc.className='add-card';
@@ -2482,6 +2550,21 @@ function renderUNO(){
     seat.appendChild(ppDiv);
     arena.appendChild(seat);
   });
+  // Yön halkası güncelle
+  (function updateDirRing(){
+    const ring=document.getElementById('directionRing');
+    const cw=document.getElementById('arrowsCW');
+    const ccw=document.getElementById('arrowsCCW');
+    if(!ring||!cw||!ccw) return;
+    if(unoDir===1){
+      cw.style.display=''; ccw.style.display='none';
+      ring.className='dir-cw';
+    } else {
+      cw.style.display='none'; ccw.style.display='';
+      ring.className='dir-ccw';
+    }
+  })();
+
   const top=unoDiscard[unoDiscard.length-1];
   const topEl=document.getElementById('topCard');if(!topEl)return;topEl.className='uno-card';
   topEl.innerHTML=drawUnoSVG(top).replace('<svg ','<svg width="96" height="138" ');
@@ -2627,6 +2710,21 @@ function isUnoPlayable(card){
   if(unoPenaltyType==='+4') return card.value==='+4';
   // Normal oyun
   if(card.color==='wild') return true;
+  // Yön halkası güncelle
+  (function updateDirRing(){
+    const ring=document.getElementById('directionRing');
+    const cw=document.getElementById('arrowsCW');
+    const ccw=document.getElementById('arrowsCCW');
+    if(!ring||!cw||!ccw) return;
+    if(unoDir===1){
+      cw.style.display=''; ccw.style.display='none';
+      ring.className='dir-cw';
+    } else {
+      cw.style.display='none'; ccw.style.display='';
+      ring.className='dir-ccw';
+    }
+  })();
+
   const top=unoDiscard[unoDiscard.length-1];
   return card.color===unoCurrentColor || card.value===top.value;
 }
@@ -2677,6 +2775,9 @@ function applyUnoEffect(card, forceThrower, forceTarget){
     unoDir *= -1;
     addLog('Yön: '+(unoDir===1?'→':'←'),'event');
     showEventBanner('⇄','YÖN DEĞİŞTİ',unoDir===1?'Saat yönünde →':'Tersine ←','#00A651');
+    // Halka flash
+    const ring=document.getElementById('directionRing');
+    if(ring){ring.classList.add('dir-flash');setTimeout(()=>ring.classList.remove('dir-flash'),1200);}
   }
   if(card.value==='Skip'){
     const skipped = currentSession.players[(unoTurn+unoDir+n*100)%n];
@@ -3184,19 +3285,10 @@ function renderUnoSuspects(){
 
 // Sohbet aç/kapat
 function toggleChat(){
-  const panel=document.getElementById('chatPanel');
-  if(!panel)return;
-  panel.classList.toggle('open');
-  if(panel.classList.contains('open')){
-    // Aktif sekme UNO ise güncelle
-    const unoTab=document.getElementById('tabContentUno');
-    if(unoTab&&!unoTab.classList.contains('hidden'))renderUnoSuspects();
-  }
-  const badge=document.getElementById('chatBadge');
-  if(badge){badge.textContent='0';badge.classList.remove('show');}
+  const p=document.getElementById('chatPanel');
+  if(!p) return;
+  p.classList.toggle('open');
 }
-
-// Mesaj gönder
 function sendChat(){
   const inp=document.getElementById('chatInput');
   if(!inp||!inp.value.trim())return;
@@ -3228,8 +3320,9 @@ function sendTaunt(text){
       if(p!==currentUser.name) showReactionBubble(p, currentUser.name+': '+text);
     });
   }
-  // Popup / laf menüsü kapat
-  document.getElementById('lafPopup')?.classList.remove('open');
+  // Chat paneli açıksa Laf sekmesine geç
+  const chatP=document.getElementById('chatPanel');
+  if(chatP && chatP.classList.contains('open')) switchTab('emoji');
   // Online ise Firebase'e push
   if(currentSession?.online && window._fb){
     try{
@@ -3525,12 +3618,9 @@ function showFinalStandings(){
 function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  // Chat paneli sadece oyun ekranında görünsün
+  // Chat paneli oyun dışında kapat
   const chat=document.getElementById('chatPanel');
-  if(chat){
-    if(id==='gameScreen') chat.style.display='';
-    else { chat.style.display='none'; chat.classList.remove('open'); }
-  }
+  if(chat) chat.classList.remove('open');
 }
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2800);}
 
