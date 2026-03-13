@@ -408,12 +408,15 @@ body{
 
 /* Masa merkezi */
 .poker-center-cards{
-  position:absolute;top:68%;left:50%;transform:translate(-50%,-50%);
-  display:flex;flex-direction:column;align-items:center;gap:.6rem;z-index:5;
+  position:absolute;top:65%;left:50%;transform:translate(-50%,-50%);
+  display:flex;flex-direction:column;align-items:center;gap:.8rem;z-index:5;
+  filter:drop-shadow(0 20px 40px rgba(0,0,0,.8));
 }
 
 /* Deste + üst kart yan yana */
-.poker-cards-row{display:flex;gap:1.2rem;align-items:flex-end;}
+.poker-cards-row{
+  display:flex;gap:2rem;align-items:flex-end;
+}
 
 /* Alt alan: SEN */
 .poker-self-area{display:flex;flex-direction:column;gap:.08rem;padding:.1rem .4rem 0;position:relative;flex:1;min-height:0;overflow:hidden;}
@@ -761,7 +764,7 @@ body{
 }
 .uno-card.playable:hover{transform:translateY(-16px) scale(1.12);}
 
-.deck-btn{background:none;border:none;border-radius:10px;width:72px;height:104px;
+.deck-btn{background:none;border:none;border-radius:10px;width:96px;height:138px;
   cursor:pointer;display:flex;align-items:center;justify-content:center;
   transition:transform .25s cubic-bezier(.34,1.56,.64,1),filter .18s,opacity .2s;
   padding:0;overflow:hidden;flex-shrink:0;
@@ -945,8 +948,8 @@ body{
   .pp-fan .mini-card{width:10px!important;}
 
   /* Deste + üst kart telefonda küçülsün */
-  #deckCard,#topCard{width:62px!important;height:90px!important;}
-  #deckCard svg,#topCard svg{width:62px!important;height:90px!important;}
+ #deckCard,#topCard{width:80px!important;height:116px!important;}
+#deckCard svg,#topCard svg{width:80px!important;height:116px!important;}
 
   /* Kendi el alanı */
   .poker-self-area{padding:.2rem .4rem;}
