@@ -2441,7 +2441,7 @@ function initUNO(){
   addLog(`Oyun başladı! Deste: ${unoDeck.length} kart`,'event');
   // Arena yüksekliğini oyuncu sayısına göre ayarla
 
-  const ds=document.getElementById('deckSvg');
+  const dw=db2.offsetWidth||96, dh=db2.offsetHeight||130;
   if(ds){
     // deckBtn boyutuna göre SVG boyutunu ayarla
     const db2=document.getElementById('deckBtn');
