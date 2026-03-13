@@ -1100,7 +1100,7 @@ body{
 
   <!-- SOHBET PANELİ -->
 
-  <div class="chat-panel" id="chatPanel">
+  <div class="chat-panel" id="chatPanel" style="display:none;">
     <div class="chat-header">
       <h3>💬 Sohbet</h3>
       <button class="chat-close" onclick="toggleChat()">✕</button>
@@ -2375,10 +2375,12 @@ function initUNO(){
 
   const ds=document.getElementById('deckSvg');
   if(ds){
-    ds.style.cssText='pointer-events:none;display:block;width:62px;height:90px;line-height:0;';
-    // SVG'yi 62x90 olarak render et
-    const W=62,H=90,R=8,cx=W/2,cy=H/2;
-    ds.innerHTML=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" style="display:block">
+    // deckBtn boyutuna göre SVG boyutunu ayarla
+    const db2=document.getElementById('deckBtn');
+    const dw=db2?db2.offsetWidth:96, dh=db2?db2.offsetHeight:138;
+    ds.style.cssText='pointer-events:none;display:block;width:'+dw+'px;height:'+dh+'px;line-height:0;';
+    const W=dw||96,H=dh||138,R=10,cx=W/2,cy=H/2;
+    ds.innerHTML=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="100%" height="100%" style="display:block">
       <rect width="${W}" height="${H}" rx="${R}" fill="#0d1525"/>
       <rect x="2" y="2" width="${W-4}" height="${H-4}" rx="${R-1}" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
       <ellipse cx="${cx}" cy="${cy}" rx="22" ry="36" fill="none" stroke="rgba(227,0,27,0.7)" stroke-width="2.5" transform="rotate(-30 ${cx} ${cy})"/>
@@ -2653,19 +2655,23 @@ function playUnoCard(idx){
     unoSaidUNO[myName]=null; // 1'den fazla kart — reset
   }
   if(currentSession&&currentSession.online)pushOnlineUNOState();
-  if(card.color==='wild'){applyUnoEffect(card);document.getElementById('colorPicker').classList.add('open');renderUNO();return;}
-  applyUnoEffect(card);nextUnoTurn();
+  // Thrower ve target'ı ŞIMDI kaydet (unoTurn ilerlemeden önce)
+  const _thrower = currentSession.players[unoTurn];
+  const _targetIdx = (unoTurn + unoDir + currentSession.players.length*100) % currentSession.players.length;
+  const _target = currentSession.players[_targetIdx];
+  if(card.color==='wild'){applyUnoEffect(card,_thrower,_target);document.getElementById('colorPicker').classList.add('open');renderUNO();return;}
+  applyUnoEffect(card,_thrower,_target);nextUnoTurn();
   // Kart oynandı — UNO dememiş biri var mı?
   setTimeout(checkAndShowCatchWindow, 200);
 }
-function applyUnoEffect(card){
+function applyUnoEffect(card, forceThrower, forceTarget){
   const n = currentSession.players.length;
   const myName = currentUser.name;
-  const thrower = currentSession.players[unoTurn]; // KİM ATIYOR — unoTurn henüz ilerlemedi
+  // forceThrower/forceTarget: playUnoCard'dan geçilirse kullan
+  const thrower = forceThrower || currentSession.players[unoTurn];
   const iMeThrow = thrower === myName;
-  // Bir sonraki kişi = atandan +1 adım (ceza alan)
-  const targetIdx = (unoTurn + unoDir + n*100) % n;
-  const target = currentSession.players[targetIdx];   // CEZA ALACAK KİŞİ
+  const targetIdx = (currentSession.players.indexOf(thrower) + unoDir + n*100) % n;
+  const target = forceTarget || currentSession.players[targetIdx];
 
   if(card.value==='Reverse'){
     unoDir *= -1;
@@ -3516,7 +3522,16 @@ function showFinalStandings(){
   renderStandingsModal(true);
   document.getElementById('standingsModal').classList.add('open');
 }
-function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  // Chat paneli sadece oyun ekranında görünsün
+  const chat=document.getElementById('chatPanel');
+  if(chat){
+    if(id==='gameScreen') chat.style.display='';
+    else { chat.style.display='none'; chat.classList.remove('open'); }
+  }
+}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2800);}
 
 // Büyük event banner — Skip/Reverse/+4 gibi olaylar için
