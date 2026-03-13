@@ -3545,29 +3545,6 @@ function clearLog(logId='gameLog'){const l=document.getElementById(logId);if(l)l
     _deferredPrompt=null;
     hideInstallBanner();
   }
-    // --- MEVCUT KODUNUN ALTINA BUNU EKLE ---
-
-// 1. Giriş işlemini başlatan fonksiyon
-function googleGirisYap() {
-    var provider = new firebase.auth.GoogleAuthProvider();
-    // Kullanıcıyı Google'a gönderir
-    firebase.auth().signInWithRedirect(provider);
-}
-
-// 2. Google'dan geri gelindiğinde veriyi yakalayan kısım (Bunu mevcut getRedirectResult ile değiştirebilirsin)
-firebase.auth().getRedirectResult()
-  .then((result) => {
-    if (result.user) {
-      // Giriş başarılı olduğunda burası çalışır
-      console.log("Giriş yapıldı:", result.user.displayName);
-      alert("Hoş geldin " + result.user.displayName);
-    }
-  }).catch((error) => {
-    console.error("Giriş hatası:", error.message);
-  });
   </script>
-  <button onclick="googleGirisYap()" style="padding: 10px 20px; background: #4285F4; color: white; border: none; cursor: pointer;">
-  Google ile Giriş Yap
-</button>
 </body>
 </html>
